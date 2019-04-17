@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by Space on 16.04.2019.
@@ -20,18 +21,7 @@ public class DeveloperDaoImplementation implements DeveloperDao {
 
     @Override
     public void insert(Developer developer) {
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(developer);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
+        executeInsideTransaction(entityManager -> entityManager.persist(developer));
     }
 
     @Override
@@ -47,34 +37,12 @@ public class DeveloperDaoImplementation implements DeveloperDao {
 
     @Override
     public void update(Developer developer) {
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(developer);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
+        executeInsideTransaction(entityManager -> entityManager.merge(developer));
     }
 
     @Override
     public void remove(Long id) {
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.remove(get(id));
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
+        executeInsideTransaction(entityManager -> entityManager.remove(get(id)));
     }
 
     @Override
@@ -87,5 +55,18 @@ public class DeveloperDaoImplementation implements DeveloperDao {
             entityManager.close();
         }
         return developers;
+    }
+
+    private void executeInsideTransaction(Consumer<EntityManager> action) {
+        try {
+            entityManager.getTransaction().begin();
+            action.accept(entityManager);
+            entityManager.getTransaction().commit();
+        } catch (RuntimeException e) {
+            entityManager.getTransaction().rollback();
+            log.error(e.getMessage());
+        } finally {
+            entityManager.close();
+        }
     }
 }

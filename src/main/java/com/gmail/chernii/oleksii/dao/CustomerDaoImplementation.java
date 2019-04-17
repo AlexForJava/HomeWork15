@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import javax.persistence.EntityManager;
+import java.util.function.Consumer;
 
 /**
  * Created by Space on 16.04.2019.
@@ -17,18 +18,7 @@ public class CustomerDaoImplementation implements Dao<Customer> {
 
     @Override
     public void insert(Customer customer) {
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.persist(customer);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
+        executeInsideTransaction(entityManager -> entityManager.persist(customer));
     }
 
     @Override
@@ -44,32 +34,23 @@ public class CustomerDaoImplementation implements Dao<Customer> {
 
     @Override
     public void update(Customer customer) {
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.merge(customer);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
-            log.error(e.getMessage());
-        }finally {
-            entityManager.close();
-        }
+        executeInsideTransaction(entityManager -> entityManager.merge(customer));
     }
 
     @Override
     public void remove(Long id) {
+        executeInsideTransaction(entityManager -> entityManager.remove(get(id)));
+    }
+
+    private void executeInsideTransaction(Consumer<EntityManager> action) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.remove(get(id));
+            action.accept(entityManager);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
-            if (entityManager != null) {
-                entityManager.getTransaction().rollback();
-            }
+            entityManager.getTransaction().rollback();
             log.error(e.getMessage());
-        }finally {
+        } finally {
             entityManager.close();
         }
     }
