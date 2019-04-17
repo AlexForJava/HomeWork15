@@ -1,5 +1,7 @@
 package com.gmail.chernii.oleksii;
 
+import lombok.experimental.UtilityClass;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -7,6 +9,7 @@ import javax.persistence.Persistence;
 /**
  * Created by Space on 16.04.2019.
  */
+@UtilityClass
 public class HibernateEntityManager {
     private static final String PERSISTANCE_UNIT_NAME = "hibernate";
     private static EntityManagerFactory entityManagerFactory;
@@ -21,10 +24,7 @@ public class HibernateEntityManager {
     }
 
     public static void shutdown() {
-        if (entityManager != null) {
-            entityManager.close();
-        }
-        if (entityManagerFactory != null) {
+        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
             entityManagerFactory.close();
         }
     }

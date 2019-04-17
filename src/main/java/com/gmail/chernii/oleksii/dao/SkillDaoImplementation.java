@@ -1,6 +1,7 @@
 package com.gmail.chernii.oleksii.dao;
 
-import com.gmail.chernii.oleksii.entity.Company;
+import com.gmail.chernii.oleksii.dao.interfaces.SkillDao;
+import com.gmail.chernii.oleksii.entity.Skill;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
@@ -11,14 +12,15 @@ import javax.persistence.EntityManager;
  */
 @Log4j
 @AllArgsConstructor
-public class CompanyDAO implements DAO<Company> {
+public class SkillDaoImplementation implements SkillDao {
     private EntityManager entityManager;
 
+
     @Override
-    public void insert(Company company) {
+    public void insert(Skill skill) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(company);
+            entityManager.persist(skill);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {
@@ -29,15 +31,21 @@ public class CompanyDAO implements DAO<Company> {
     }
 
     @Override
-    public Company get(Long id) {
-        return entityManager.find(Company.class, id);
+    public Skill get(Long id) {
+        Skill skill = new Skill();
+        try {
+            skill = entityManager.find(Skill.class, id);
+        } finally {
+            entityManager.close();
+        }
+        return skill;
     }
 
     @Override
-    public void update(Company company) {
+    public void update(Skill skill) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(company);
+            entityManager.merge(skill);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {
@@ -58,6 +66,8 @@ public class CompanyDAO implements DAO<Company> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.gmail.chernii.oleksii.dao;
 
-import com.gmail.chernii.oleksii.entity.Skill;
+import com.gmail.chernii.oleksii.dao.interfaces.ProjectDao;
+import com.gmail.chernii.oleksii.entity.Project;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
@@ -11,15 +12,14 @@ import javax.persistence.EntityManager;
  */
 @Log4j
 @AllArgsConstructor
-public class SkillDAO implements DAO<Skill> {
+public class ProjectDaoImplementation implements ProjectDao {
     private EntityManager entityManager;
 
-
     @Override
-    public void insert(Skill skill) {
+    public void insert(Project project) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(skill);
+            entityManager.persist(project);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {
@@ -30,15 +30,21 @@ public class SkillDAO implements DAO<Skill> {
     }
 
     @Override
-    public Skill get(Long id) {
-        return entityManager.find(Skill.class, id);
+    public Project get(Long id) {
+        Project project = new Project();
+        try {
+            project = entityManager.find(Project.class, id);
+        } finally {
+            entityManager.close();
+        }
+        return project;
     }
 
     @Override
-    public void update(Skill skill) {
+    public void update(Project project) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(skill);
+            entityManager.merge(project);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {

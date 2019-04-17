@@ -1,5 +1,6 @@
 package com.gmail.chernii.oleksii.dao;
 
+import com.gmail.chernii.oleksii.dao.interfaces.Dao;
 import com.gmail.chernii.oleksii.entity.Customer;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -11,7 +12,7 @@ import javax.persistence.EntityManager;
  */
 @Log4j
 @AllArgsConstructor
-public class CustomerDAO implements DAO<Customer> {
+public class CustomerDaoImplementation implements Dao<Customer> {
     private EntityManager entityManager;
 
     @Override
@@ -25,12 +26,20 @@ public class CustomerDAO implements DAO<Customer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
     public Customer get(Long id) {
-        return entityManager.find(Customer.class, id);
+        Customer customer = new Customer();
+        try{
+            customer = entityManager.find(Customer.class, id);
+        } finally {
+            entityManager.close();
+        }
+        return customer;
     }
 
     @Override
@@ -44,6 +53,8 @@ public class CustomerDAO implements DAO<Customer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        }finally {
+            entityManager.close();
         }
     }
 
@@ -58,6 +69,8 @@ public class CustomerDAO implements DAO<Customer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        }finally {
+            entityManager.close();
         }
     }
 }

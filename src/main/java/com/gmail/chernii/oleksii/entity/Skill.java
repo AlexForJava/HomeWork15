@@ -11,13 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,38 +37,4 @@ public class Skill {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "skills")
     private Set<Developer> developers = new HashSet<>();
 
-    @PrePersist
-    public void prePresist() {
-        log.info("Skill prePresist");
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        log.info("Skill preUpdate");
-    }
-
-    @PreRemove
-    public void preRemove() {
-        log.info("Skill preRemove");
-    }
-
-    @PostLoad
-    public void postLoad() {
-        log.info("Skill postLoad");
-    }
-
-    @PostPersist
-    public void postPersist() {
-        log.info("Skill postUpate");
-    }
-
-    @PostUpdate
-    public void postUpdate() {
-        log.info("Skill postUpdate");
-    }
-
-    @PostRemove
-    public void postRemove() {
-        log.info("Skill postRemove");
-    }
 }

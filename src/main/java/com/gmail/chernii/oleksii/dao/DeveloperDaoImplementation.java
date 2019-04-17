@@ -1,17 +1,21 @@
 package com.gmail.chernii.oleksii.dao;
 
+import com.gmail.chernii.oleksii.dao.interfaces.DeveloperDao;
 import com.gmail.chernii.oleksii.entity.Developer;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Space on 16.04.2019.
  */
 @Log4j
 @AllArgsConstructor
-public class DeveloperDAO implements DAO<Developer> {
+public class DeveloperDaoImplementation implements DeveloperDao {
     private EntityManager entityManager;
 
     @Override
@@ -25,12 +29,20 @@ public class DeveloperDAO implements DAO<Developer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
     public Developer get(Long id) {
-        return entityManager.find(Developer.class, id);
+        Developer developer = new Developer();
+        try {
+            developer = entityManager.find(Developer.class, id);
+        } finally {
+            entityManager.close();
+        }
+        return developer;
     }
 
     @Override
@@ -44,6 +56,8 @@ public class DeveloperDAO implements DAO<Developer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 
@@ -58,6 +72,20 @@ public class DeveloperDAO implements DAO<Developer> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
+    }
+
+    @Override
+    public List<Developer> getAll() {
+        List<Developer> developers = new ArrayList<>();
+        try {
+            TypedQuery<Developer> developerTypedQuery = entityManager.createQuery("Developer.getAll", Developer.class);
+            developers = developerTypedQuery.getResultList();
+        } finally {
+            entityManager.close();
+        }
+        return developers;
     }
 }

@@ -8,15 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import java.sql.Date;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +30,7 @@ public class Project extends Model {
     private Double cost;
 
     @Column
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     @ManyToMany
@@ -55,39 +51,4 @@ public class Project extends Model {
             inverseJoinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"))
     private Set<Company> companies = new HashSet<>();
 
-
-    @PrePersist
-    public void prePresist() {
-        log.info("Project prePresist");
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        log.info("Project preUpdate");
-    }
-
-    @PreRemove
-    public void preRemove() {
-        log.info("Project preRemove");
-    }
-
-    @PostLoad
-    public void postLoad() {
-        log.info("Project postLoad");
-    }
-
-    @PostPersist
-    public void postPersist() {
-        log.info("Project postUpate");
-    }
-
-    @PostUpdate
-    public void postUpdate() {
-        log.info("Project postUpdate");
-    }
-
-    @PostRemove
-    public void postRemove() {
-        log.info("Project postRemove");
-    }
 }

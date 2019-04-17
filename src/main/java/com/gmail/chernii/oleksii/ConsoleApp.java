@@ -1,7 +1,7 @@
 package com.gmail.chernii.oleksii;
 
-import com.gmail.chernii.oleksii.dao.DAO;
-import com.gmail.chernii.oleksii.dao.DeveloperDAO;
+import com.gmail.chernii.oleksii.dao.interfaces.Dao;
+import com.gmail.chernii.oleksii.dao.DeveloperDaoImplementation;
 import com.gmail.chernii.oleksii.entity.Developer;
 import com.gmail.chernii.oleksii.entity.Sex;
 
@@ -12,7 +12,7 @@ import javax.persistence.EntityManager;
  */
 public class ConsoleApp {
     public static void main(String[] args) {
-        EntityManager entityManager = HibernateEntityManager.getEntityManager();
+       EntityManager entityManager = HibernateEntityManager.getEntityManager();
 
         Developer developer = new Developer();
         developer.setName("Alex");
@@ -20,10 +20,8 @@ public class ConsoleApp {
         developer.setAge(20);
         developer.setSalary(2000);
 
-        DAO<Developer> developerDAO = new DeveloperDAO(entityManager);
+        Dao<Developer> developerDAO = new DeveloperDaoImplementation(entityManager);
         developerDAO.insert(developer);
-
         HibernateEntityManager.shutdown();
-
     }
 }

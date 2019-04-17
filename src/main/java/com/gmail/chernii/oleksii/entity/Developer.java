@@ -11,13 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +23,7 @@ import java.util.Set;
 @Log4j
 @Entity
 @Table(name = "developers")
+@NamedQuery(name ="Developer.getAll", query = "SELECT d FROM Developer d")
 public class Developer extends Model {
     @Column
     private Integer age;
@@ -48,38 +43,4 @@ public class Developer extends Model {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "developers")
     private Set<Project> projects = new HashSet<>();
 
-    @PrePersist
-    public void prePresist() {
-        log.info("Developer prePresist");
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        log.info("Developer preUpdate");
-    }
-
-    @PreRemove
-    public void preRemove() {
-        log.info("Developer preRemove");
-    }
-
-    @PostLoad
-    public void postLoad() {
-        log.info("Developer postLoad");
-    }
-
-    @PostPersist
-    public void postPersist() {
-        log.info("Developer postUpate");
-    }
-
-    @PostUpdate
-    public void postUpdate() {
-        log.info("Developer postUpdate");
-    }
-
-    @PostRemove
-    public void postRemove() {
-        log.info("Developer postRemove");
-    }
 }

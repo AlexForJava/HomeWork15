@@ -1,6 +1,7 @@
 package com.gmail.chernii.oleksii.dao;
 
-import com.gmail.chernii.oleksii.entity.Project;
+import com.gmail.chernii.oleksii.dao.interfaces.CompanyDao;
+import com.gmail.chernii.oleksii.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
@@ -11,39 +12,49 @@ import javax.persistence.EntityManager;
  */
 @Log4j
 @AllArgsConstructor
-public class ProjectDAO implements DAO<Project> {
+public class CompanyDaoImplementation implements CompanyDao {
     private EntityManager entityManager;
 
     @Override
-    public void insert(Project project) {
+    public void insert(Company company) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(project);
+            entityManager.persist(company);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
-    public Project get(Long id) {
-        return entityManager.find(Project.class, id);
+    public Company get(Long id) {
+        Company company = new Company();
+        try {
+            company = entityManager.find(Company.class, id);
+        } finally {
+            entityManager.close();
+        }
+        return company;
     }
 
     @Override
-    public void update(Project project) {
+    public void update(Company company) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(project);
+            entityManager.merge(company);
             entityManager.getTransaction().commit();
         } catch (RuntimeException e) {
             if (entityManager != null) {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 
@@ -58,6 +69,8 @@ public class ProjectDAO implements DAO<Project> {
                 entityManager.getTransaction().rollback();
             }
             log.error(e.getMessage());
+        } finally {
+            entityManager.close();
         }
     }
 }
