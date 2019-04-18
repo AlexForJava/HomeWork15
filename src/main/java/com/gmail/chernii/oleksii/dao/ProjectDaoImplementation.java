@@ -2,19 +2,19 @@ package com.gmail.chernii.oleksii.dao;
 
 import com.gmail.chernii.oleksii.dao.interfaces.ProjectDao;
 import com.gmail.chernii.oleksii.entity.Project;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import javax.persistence.EntityManager;
-import java.util.function.Consumer;
 
 /**
  * Created by Space on 16.04.2019.
  */
 @Log4j
-@AllArgsConstructor
-public class ProjectDaoImplementation implements ProjectDao {
-    private EntityManager entityManager;
+public class ProjectDaoImplementation extends EntityManagerHolder implements ProjectDao {
+
+    public ProjectDaoImplementation(EntityManager entityManager) {
+        super(entityManager);
+    }
 
     @Override
     public void insert(Project project) {
@@ -22,7 +22,7 @@ public class ProjectDaoImplementation implements ProjectDao {
     }
 
     @Override
-    public Project get(Long id) {
+    public Project getById(Long id) {
         Project project = new Project();
         try {
             project = entityManager.find(Project.class, id);
@@ -38,20 +38,7 @@ public class ProjectDaoImplementation implements ProjectDao {
     }
 
     @Override
-    public void remove(Long id) {
-        executeInsideTransaction(entityManager -> entityManager.remove(get(id)));
-    }
-
-    private void executeInsideTransaction(Consumer<EntityManager> action) {
-        try {
-            entityManager.getTransaction().begin();
-            action.accept(entityManager);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            entityManager.getTransaction().rollback();
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
+    public void removeById(Long id) {
+        executeInsideTransaction(entityManager -> entityManager.remove(getById(id)));
     }
 }

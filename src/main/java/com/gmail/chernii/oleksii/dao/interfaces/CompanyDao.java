@@ -5,5 +5,5 @@ import com.gmail.chernii.oleksii.entity.Company;
 /**
  * Created by Space on 17.04.2019.
  */
-public interface CompanyDao extends Dao<Company>  {
+public interface CompanyDao extends GenericDao<Company> {
 }

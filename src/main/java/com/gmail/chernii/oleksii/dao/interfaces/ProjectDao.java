@@ -5,5 +5,5 @@ import com.gmail.chernii.oleksii.entity.Project;
 /**
  * Created by Space on 17.04.2019.
  */
-public interface ProjectDao extends Dao<Project> {
+public interface ProjectDao extends GenericDao<Project> {
 }

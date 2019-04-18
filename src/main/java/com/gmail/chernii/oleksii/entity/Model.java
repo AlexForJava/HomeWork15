@@ -1,5 +1,6 @@
 package com.gmail.chernii.oleksii.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import javax.persistence.MappedSuperclass;
 /**
  * Created by Space on 16.04.2019.
  */
+@Data
 @Getter
 @Setter
 @NoArgsConstructor

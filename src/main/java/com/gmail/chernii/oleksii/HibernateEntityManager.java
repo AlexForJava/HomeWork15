@@ -12,6 +12,7 @@ import javax.persistence.Persistence;
 @UtilityClass
 public class HibernateEntityManager {
     private static final String PERSISTANCE_UNIT_NAME = "hibernate";
+
     private static EntityManagerFactory entityManagerFactory;
     private static EntityManager entityManager;
 

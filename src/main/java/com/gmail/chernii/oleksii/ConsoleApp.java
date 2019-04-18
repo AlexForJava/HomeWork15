@@ -1,6 +1,6 @@
 package com.gmail.chernii.oleksii;
 
-import com.gmail.chernii.oleksii.dao.interfaces.Dao;
+import com.gmail.chernii.oleksii.dao.interfaces.GenericDao;
 import com.gmail.chernii.oleksii.dao.DeveloperDaoImplementation;
 import com.gmail.chernii.oleksii.entity.Developer;
 import com.gmail.chernii.oleksii.entity.Sex;
@@ -20,7 +20,7 @@ public class ConsoleApp {
         developer.setAge(20);
         developer.setSalary(2000);
 
-        Dao<Developer> developerDAO = new DeveloperDaoImplementation(entityManager);
+        GenericDao<Developer> developerDAO = new DeveloperDaoImplementation(entityManager);
         developerDAO.insert(developer);
         HibernateEntityManager.shutdown();
     }

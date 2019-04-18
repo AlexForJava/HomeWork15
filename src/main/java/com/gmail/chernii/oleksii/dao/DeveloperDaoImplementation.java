@@ -2,22 +2,22 @@ package com.gmail.chernii.oleksii.dao;
 
 import com.gmail.chernii.oleksii.dao.interfaces.DeveloperDao;
 import com.gmail.chernii.oleksii.entity.Developer;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Created by Space on 16.04.2019.
  */
 @Log4j
-@AllArgsConstructor
-public class DeveloperDaoImplementation implements DeveloperDao {
-    private EntityManager entityManager;
+public class DeveloperDaoImplementation extends EntityManagerHolder implements DeveloperDao {
+
+    public DeveloperDaoImplementation(EntityManager entityManager) {
+        super(entityManager);
+    }
 
     @Override
     public void insert(Developer developer) {
@@ -25,7 +25,7 @@ public class DeveloperDaoImplementation implements DeveloperDao {
     }
 
     @Override
-    public Developer get(Long id) {
+    public Developer getById(Long id) {
         Developer developer = new Developer();
         try {
             developer = entityManager.find(Developer.class, id);
@@ -41,8 +41,8 @@ public class DeveloperDaoImplementation implements DeveloperDao {
     }
 
     @Override
-    public void remove(Long id) {
-        executeInsideTransaction(entityManager -> entityManager.remove(get(id)));
+    public void removeById(Long id) {
+        executeInsideTransaction(entityManager -> entityManager.remove(getById(id)));
     }
 
     @Override
@@ -55,18 +55,5 @@ public class DeveloperDaoImplementation implements DeveloperDao {
             entityManager.close();
         }
         return developers;
-    }
-
-    private void executeInsideTransaction(Consumer<EntityManager> action) {
-        try {
-            entityManager.getTransaction().begin();
-            action.accept(entityManager);
-            entityManager.getTransaction().commit();
-        } catch (RuntimeException e) {
-            entityManager.getTransaction().rollback();
-            log.error(e.getMessage());
-        } finally {
-            entityManager.close();
-        }
     }
 }
