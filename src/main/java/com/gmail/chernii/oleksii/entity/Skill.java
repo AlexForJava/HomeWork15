@@ -29,7 +29,7 @@ public class Skill {
     private Long id;
 
     @Column
-    private String level;
+    private Level level;
 
     @Column
     private String branch;
